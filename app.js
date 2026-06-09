@@ -15,12 +15,13 @@ if (process.env.NODE_ENV === 'production') {
 
 if(process.env.NODE_ENV != 'production'){
     app.use((req,res,next)=>{
-        logger.debug();
+        logger.debug(`${req.files} ${req.baseUrl}`);
+        next();
     })
 }
 
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'public'));
+app.set('views', path.join(__dirname, 'views'));
 
 // Helmet Integration Pending
 
@@ -30,6 +31,7 @@ app.use(express.urlencoded({extended : true, limit : '10kb'}));
 
 app.use(mongoSanitize());
 app.use(xssClean());
+app.use(cookieParser(process.env.COOKIE_SECRET));
 
 const globalLimiter = rateLimit({
     windowMs : parseInt(process.env.RATE_LIMIT_WINDOW_MS,10) || 15 * 60 * 1000,
@@ -38,5 +40,7 @@ const globalLimiter = rateLimit({
     legacyHeaders : false,
     message : {status: 'fail', message : 'Too many requests. Please try again'}
 })
+
+//Pending errorHandler.
 
 module.exports = app;

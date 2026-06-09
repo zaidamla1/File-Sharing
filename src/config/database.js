@@ -13,10 +13,10 @@ const connectDB = async () => {
         logger.info(`MongoDB Connected ${conn.connection.host}`);
 
         mongoose.connection.on('error', (err) => {
-            logger.error(`MongoDB Connection error: ${err.message}`)
+            logger.warn(`MongoDB Connection error: ${err.message}`)
         })
 
-        mongoose.connection.on('disconnected', (err) => {
+        mongoose.connection.on('disconnected', () => {
             logger.error(`MongoDB disconnected. Attemtping restart 😎`);
         })
 
